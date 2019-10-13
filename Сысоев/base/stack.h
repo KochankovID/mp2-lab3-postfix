@@ -8,8 +8,8 @@ class TStack
 {
 public:
 	// Конструкторы ----------------------------------------------------------------------------------------
-	TStack() :size(increase), top_el(-1) { initialization_new_buffer(); }  // Конструктор по умолчанию
-	TStack(const TStack& copy) :size(copy.size), top_el(copy.top_el) {  // Конструктор копирования
+	TStack() :size_buf(increase), top_el(-1) { initialization_new_buffer(); }  // Конструктор по умолчанию
+	TStack(const TStack& copy) :size_buf(copy.size_buf), top_el(copy.top_el) {  // Конструктор копирования
 		initialization_new_buffer();
 		for (int i = 0; i < copy.top_el+1; i++) {
 			pMem[i] = copy.pMem[i];
@@ -26,6 +26,7 @@ public:
 	T& top();  // Доступ к верхнему элементу стека
 	bool isEmpty();  // Проверка на пустоту стека
 	bool isFull();  // Проверка на заполненность стека
+	int size() { return top_el + 1; };  // Возвращает кол-во элементов в стеке
 
 	// Деструктор ------------------------------------------------------------------------------------------
 	~TStack() {
@@ -38,7 +39,7 @@ private:
 
 	// Поля ------------------------------------------------------------------------------------------------
 	const int increase = 10;  // Размер увеличения буфера стека
-	int size;  // Размер буфера стека
+	int size_buf;  // Размер буфера стека
 	int top_el;  // Индекс вехрнего элемента стека
 	T* pMem;  // Указатель на буфер стека
 };
@@ -51,7 +52,7 @@ inline void TStack<T>::push(const T& element)
 	if (isFull()) {
 		throw std::runtime_error("Стек переполнен! Невозможно добавить элемент!");
 	}
-	if (top_el >= size - 1) {
+	if (top_el >= size_buf - 1) {
 		increase_buffer();
 	}
 	top_el++;
@@ -97,7 +98,7 @@ inline bool TStack<T>::isFull()
 template<class T>
 inline void TStack<T>::initialization_new_buffer()
 {
-	pMem = new T[size]();
+	pMem = new T[size_buf]();
 }
 
 template<class T>
@@ -108,8 +109,8 @@ inline void TStack<T>::increase_buffer()
 		arr_copy[i] = pMem[i];
 	}
 	delete[] pMem;
-	size += increase;
-	pMem = new T[size];
+	size_buf += increase;
+	pMem = new T[size_buf];
 	for (int i = 0; i < top_el; i++) {
 		pMem[i] = arr_copy[i];
 	}

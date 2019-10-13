@@ -21,7 +21,7 @@ double div(double a, double b) {
 void TPostfix::ToPostfix()
 {
 	isCorrect();
-	auto expression = split(infix);
+	auto expression = split();
 
 	TStack<operation*> operations;
 
@@ -35,6 +35,7 @@ void TPostfix::ToPostfix()
 				if (oper->getName() == ")") {
 					while (operations.top()->getName() != "(")
 					{
+						exp.push_back(operations.top());
 						postfix += operations.pop()->getName();
 					}
 					operations.pop();
@@ -42,6 +43,7 @@ void TPostfix::ToPostfix()
 				else {
 					while ((!operations.isEmpty()) && (operations.top()->getPriority() >= oper->getPriority()))
 					{
+						exp.push_back(operations.top());
 						postfix += operations.pop()->getName();
 					}
 					operations.push(oper);
@@ -49,12 +51,16 @@ void TPostfix::ToPostfix()
 			}
 		}
 		else {
+			if ((exp.size()>0)&&(!exp[exp.size() - 1]->getType())) {
+				postfix += " ";
+			}
+			exp.push_back(t);
 			postfix += t->getName();
-			delete t;
 		}
 	}
 	while (!operations.isEmpty())
 	{
+		exp.push_back(operations.top());
 		postfix += operations.pop()->getName();
 	}
 }
@@ -74,24 +80,30 @@ double TPostfix::Calculate()
 	if (postfix == "") {
 		ToPostfix();
 	}
-	auto vect = split(postfix);
 
 	double val;
-	for (operand* t : vect) {
+	for (operand* t : exp) {
 		if (!t->getType()) {
-			cout << "Input value of variable " + t->getName() + ":";
-			cin >> val;
-			static_cast<variable*>(t)->setValue(val);
+			try {
+				static_cast<variable*>(t)->setValue(std::stod(t->getName()));
+			}
+			catch(...){
+				cout << "Input value of variable " + t->getName() + ":";
+				cin >> val;
+				static_cast<variable*>(t)->setValue(val);
+			}
 		}
 	}
 
-	for (operand* t : vect) {
+	for (operand* t : exp) {
 		if (t->getType()) {
+			if (vars.size() == 1) {
+				throw std::runtime_error("Not enough operands!");
+			}
 			vars.push((*static_cast<operation*>(t))(vars.pop(), vars.pop()));
 		}
 		else {
 			vars.push(static_cast<variable*>(t)->getValue());
-			delete t;
 		}
 	}
 	return vars.pop();
@@ -163,25 +175,34 @@ void TPostfix::isCorrect()
 	}
 }
 
-vector<operand*> TPostfix::split(const string& expr)
+vector<operand*> TPostfix::split()
 {
 	vector<operand*> expr_splitted;
 
-	string str;
+	string str = "";
+	string current_elem;
 	bool flag;
-	for (int i = 0; i < expr.length(); i++) {
-		str = expr[i];
+	for (int i = 0; i < infix.length(); i++) {
+		current_elem = infix[i];
 		flag = true;
+
 		for (operation* t : arr) {
-			if (t->getName() == str) {
+			if (t->getName() == current_elem) {
+				if (str != "") {
+					expr_splitted.push_back(new variable(str));
+					str = "";
+				}
 				expr_splitted.push_back(t);
 				flag = false;
-				break;
 			}
 		}
 		if (flag) {
-			expr_splitted.push_back(new variable(str));
+			str += current_elem;
 		}
+	
+	}
+	if (str != "") {
+		expr_splitted.push_back(new variable(str));
 	}
 	return expr_splitted;
 }

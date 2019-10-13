@@ -19,10 +19,6 @@ int main()
   cout << postfix.getTableBrackets() << endl;
   cout << postfix.GetPostfix() << endl;
   cout << postfix.Calculate() << endl;
-  /*postfix.ToPostfix();
-  cout << "постфиксная форма: " << postfix.getpostfix() << endl;
-  res = postfix.calculate();
-  cout << res << endl;*/
 
   return 0;
 }
