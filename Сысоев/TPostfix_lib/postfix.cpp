@@ -3,6 +3,7 @@
 #include <iostream>
 #include "funk_operations.h"
 
+using namespace std;
 
 void TPostfix::ToPostfix()
 {

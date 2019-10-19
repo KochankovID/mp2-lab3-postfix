@@ -41,6 +41,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>C:\Users\Илья\Desktop\АиСД\mp2-lab3-postfix\Сысоев\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -52,12 +53,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalOptions>/EHsc %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(SolutionDir)TPostfix_lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\gtest\debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gtest.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Debug;..\gtest\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gtest.lib;TPostfix_lib.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -80,17 +82,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="funk_operations.cpp" />
-    <ClCompile Include="postfix.cpp" />
     <ClCompile Include="sample_postfix.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="funk_operations.h" />
-    <ClInclude Include="operand.h" />
-    <ClInclude Include="operation.h" />
-    <ClInclude Include="postfix.h" />
-    <ClInclude Include="stack.h" />
-    <ClInclude Include="variable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

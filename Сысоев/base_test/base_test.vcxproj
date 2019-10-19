@@ -52,13 +52,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\gtest;..\base</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\gtest;$(SolutionDir)TPostfix_lib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\gtest\debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>gtest.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Debug;..\gtest\debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>gtest.lib;TPostfix_lib.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -86,6 +86,11 @@
     <ClCompile Include="test_operation.cpp" />
     <ClCompile Include="test_tpostfix.cpp" />
     <ClCompile Include="test_tstack.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\gtest\gtest.vcxproj">
+      <Project>{60932afc-7808-48b7-b3bf-f2bc151c0065}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
