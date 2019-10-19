@@ -27,5 +27,8 @@
     <ClCompile Include="test_operation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test_variable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

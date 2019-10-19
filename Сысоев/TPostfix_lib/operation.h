@@ -14,7 +14,8 @@ public:
 	operation( std::string name, int priority_, double(*funk_)(double, double), int koll_of_operands_ = 2)
 		:priority(priority_), operand(name),funk(funk_),
 		koll_of_operands(koll_of_operands_) {}  // Конструктор инициализатор
-	operation(const operation& copy):priority(copy.priority), operand(copy){}  // Конструктор копирования
+	operation(const operation& copy):priority(copy.priority), 
+		koll_of_operands(copy.koll_of_operands), operand(copy){}  // Конструктор копирования
 
 	// Методы ----------------------------------------------------------------------------------------------
 	bool getType() { return true; }  // Получение типа потомка

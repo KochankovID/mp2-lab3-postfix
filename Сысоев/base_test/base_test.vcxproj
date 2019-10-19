@@ -86,6 +86,7 @@
     <ClCompile Include="test_operation.cpp" />
     <ClCompile Include="test_tpostfix.cpp" />
     <ClCompile Include="test_tstack.cpp" />
+    <ClCompile Include="test_variable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\gtest\gtest.vcxproj">

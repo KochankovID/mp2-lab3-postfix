@@ -17,8 +17,7 @@ public:
 		initialise_operations(); 
 		infix.erase(remove(infix.begin(), infix.end(), ' '), infix.end());
 	}  
-	TPostfix(const TPostfix& copy) :  // Конструктор копирования
-		infix(copy.infix), postfix(copy.postfix), arr(copy.arr) {}
+	TPostfix(const TPostfix& copy) = delete;  // Запрещен конструктор копирования
 
 	// Методы ----------------------------------------------------------------------------------------------
 	std::string GetInfix() { return infix; }  // Доступ к инфексной форме записи

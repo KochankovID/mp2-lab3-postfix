@@ -1,5 +1,6 @@
 #include "funk_operations.h"
 #include <math.h>
+#include <stdexcept>
 
 // Реализация функций операций
 
@@ -16,6 +17,9 @@ double mul(double a, double b) {
 }
 
 double div(double a, double b) {
+	if ((b - 0)<0.0001) {
+		throw std::runtime_error("Деление на ноль запрещено!");
+	}
 	return a / b;
 }
 
