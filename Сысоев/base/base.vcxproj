@@ -80,10 +80,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="funk_operations.cpp" />
     <ClCompile Include="postfix.cpp" />
     <ClCompile Include="sample_postfix.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="funk_operations.h" />
     <ClInclude Include="operand.h" />
     <ClInclude Include="operation.h" />
     <ClInclude Include="postfix.h" />

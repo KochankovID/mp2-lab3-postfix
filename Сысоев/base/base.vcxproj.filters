@@ -21,6 +21,9 @@
     <ClCompile Include="postfix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="funk_operations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="postfix.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="variable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="funk_operations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

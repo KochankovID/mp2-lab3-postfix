@@ -1,17 +1,27 @@
 #pragma once
 #include "operand.h"
+
+/*
+Класс переменная. Унаследован от класса операнд.
+Абстрактное представление переменной (или числовой константы)
+*/
+
 class variable :
 	public operand
 {
 public:
-	variable(std::string str, double val = 0) :operand(str), value(val) {}
+	// Конструкторы ----------------------------------------------------------------------------------------
+	variable(std::string str, double val = 0) :operand(str), value(val) {}  // Конструктор инициализатор
 
-	bool getType() { return false; }
+	// Методы ----------------------------------------------------------------------------------------------
+	bool getType() { return false; }  // Получение типа потомка
+	double getValue() { return value; }  // Получение значения переменной
+	void setValue(double val) { value = val; }  // Установка значения переменной
 
-	double getValue() { return value; }
-	void setValue(double val) { value = val; }
-
+	// Деструктор ------------------------------------------------------------------------------------------
+	~variable() {}
 private:
-	double value;
+	// Поля ------------------------------------------------------------------------------------------------
+	double value;  // Значение переменной
 };
 

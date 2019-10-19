@@ -1,64 +1,58 @@
 ﻿#include "postfix.h"
 #include <stdexcept>
 #include <iostream>
+#include "funk_operations.h"
 
-double sum(double a, double b) {
-	return a + b;
-}
-
-double sub(double a, double b) {
-	return a - b;
-}
-
-double mul(double a, double b) {
-	return a * b;
-}
-
-double div(double a, double b) {
-	return a / b;
-}
 
 void TPostfix::ToPostfix()
 {
-	isCorrect();
-	auto expression = split();
+	auto expression = split();  // Разбиение строки на операнды
+	isCorrectBrakets(&expression);  // Проверка выражения на корректность скобок
 
-	TStack<operation*> operations;
+	TStack<operation*> operations; // Стек операций
 
 	for (operand* t : expression) {
-		if (t->getType()) {
-			operation* oper = static_cast<operation*>(t);
-			if ((operations.isEmpty()) || (oper->getPriority() == 0) || (operations.top()->getPriority() < oper->getPriority())){
-				operations.push(oper);
+		if (t->getType()) {  // Обработка операций
+			operation* oper = static_cast<operation*>(t);  // Понижающее привидение типа
+			if ((operations.isEmpty()) ||  // Если стек операций пуст
+				(oper->getPriority() == 0) ||  // Если приоритет операции = 0 '('
+				((operations.top()->getPriority() < oper->getPriority()) && // Если приоритет новой операции строго больше
+				(operations.top()->getName() != "("))) // И предыдущая операция не открывающая стобка
+			{
+				operations.push(oper);  // Добавляем операция в стек операций
 			}
 			else {
-				if (oper->getName() == ")") {
-					while (operations.top()->getName() != "(")
+				if (oper->getName() == ")") {  // Особая обработка закрывающей скобки
+					while (operations.top()->getName() != "(")  
 					{
-						exp.push_back(operations.top());
-						postfix += operations.pop()->getName();
+						exp.push_back(operations.top()); // Достаем из стека все операции до первой '('
+						postfix += operations.pop()->getName();  // Имена операций записываем в постфикс
 					}
-					operations.pop();
+					operations.pop();  // Удаляем из стека '('
 				}
-				else {
-					while ((!operations.isEmpty()) && (operations.top()->getPriority() >= oper->getPriority()))
+				else {  // Если приоиртет меньше либо равен
+					while ((!operations.isEmpty()) &&   // Выполняем пока стек не пуст
+						(operations.top()->getPriority() >= oper->getPriority())) // И пока приоритет больше или равен
 					{
-						exp.push_back(operations.top());
-						postfix += operations.pop()->getName();
+						exp.push_back(operations.top());  // Записываем в вектор операндов
+						postfix += operations.pop()->getName();  // Записываем в постфисную строку
 					}
-					operations.push(oper);
+					operations.push(oper);  // Добавляем в стек текущую операцию
 				}
 			}
 		}
-		else {
-			if ((exp.size()>0)&&(!exp[exp.size() - 1]->getType())) {
-				postfix += " ";
+		else {  // Обработка переменных
+			if ((exp.size() > 0) &&  // Если вектор не пуст
+				(!exp[exp.size() - 1]->getType()))  // И предыдущий операнд - перемнная
+			{
+				postfix += " ";  // Добавим пробел в постфиксную строку
 			}
-			exp.push_back(t);
-			postfix += t->getName();
+			exp.push_back(t);  // Добавим переменную в вектор операндов
+			postfix += t->getName();  // Записываем имя переменной в постфисную строку
 		}
 	}
-	while (!operations.isEmpty())
+
+	while (!operations.isEmpty())  // Если в стеке остались операции извлекаем их
 	{
 		exp.push_back(operations.top());
 		postfix += operations.pop()->getName();
@@ -67,7 +61,8 @@ void TPostfix::ToPostfix()
 
 string TPostfix::GetPostfix()
 {
-	if (postfix == "") {
+	if (postfix == "")  // Если вызываем первый раз
+	{ 
 		ToPostfix();
 	}
 	return postfix;
@@ -75,19 +70,23 @@ string TPostfix::GetPostfix()
 
 double TPostfix::Calculate()
 {
-	TStack<double> vars;
-
-	if (postfix == "") {
+	if (postfix == "")  // Если вызываем первый раз
+	{
 		ToPostfix();
 	}
 
-	double val;
-	for (operand* t : exp) {
+	TStack<double> vars;  // Стек переменных
+
+	double val;  // Результат выражения
+
+
+	for (operand* t : exp)  // Считывание значений переменных
+	{
 		if (!t->getType()) {
 			try {
 				static_cast<variable*>(t)->setValue(std::stod(t->getName()));
 			}
-			catch(...){
+			catch (...) {
 				cout << "Input value of variable " + t->getName() + ":";
 				cin >> val;
 				static_cast<variable*>(t)->setValue(val);
@@ -95,12 +94,23 @@ double TPostfix::Calculate()
 		}
 	}
 
-	for (operand* t : exp) {
+
+	for (operand* t : exp)  // Вычисление результата
+	{
 		if (t->getType()) {
-			if (vars.size() == 1) {
-				throw std::runtime_error("Not enough operands!");
+			operation* oper = static_cast<operation*>(t);
+			switch (oper->get_koll_of_operands())
+			{
+			case 1:  // Унарные операции
+				vars.push((*oper)(vars.pop(), 0));
+				break;
+			case 2:  // Бинарные операции
+				if (vars.size() == 1) {
+					throw std::runtime_error("Not enough operands!");
+				}
+				vars.push((*oper)(vars.pop(), vars.pop()));
+				break;
 			}
-			vars.push((*static_cast<operation*>(t))(vars.pop(), vars.pop()));
 		}
 		else {
 			vars.push(static_cast<variable*>(t)->getValue());
@@ -126,7 +136,7 @@ string TPostfix::getTableBrackets()
 				str += "Открывающая - Закрывающая " + std::to_string(koll) + '\n';
 			}
 			else {
-				str += "Открывающая " + std::to_string(stack.pop()) +" Закрывающая " + std::to_string(koll) + '\n';
+				str += "Открывающая " + std::to_string(stack.pop()) + " Закрывающая " + std::to_string(koll) + '\n';
 			}
 			koll++;
 			break;
@@ -149,25 +159,34 @@ void TPostfix::initialise_operations()
 	arr.push_back(new operation("-", 2, sub));
 	arr.push_back(new operation("*", 3, mul));
 	arr.push_back(new operation("/", 3, div));
+	arr.push_back(new operation("++", 4, sum_un, 1));
+	arr.push_back(new operation("--", 4, sub_un, 1));
+	arr.push_back(new operation("sin", 4, sin, 1));
+	arr.push_back(new operation("cos", 4, cos, 1));
+	arr.push_back(new operation("tg", 4, tg, 1));
+	arr.push_back(new operation("ctg", 4, ctg, 1));
+	arr.push_back(new operation("ln", 4, ln, 1));
 }
 
-void TPostfix::isCorrect()
+void TPostfix::isCorrectBrakets(const vector<operand*>* v) // Проверка выражения на корректность
 {
-	TStack<int> stack;
-	for (int i = 0; i < infix.length(); i++) {
-		switch (infix[i])
-		{
-		case '(':
-			stack.push(i);
-			break;
-		case ')':
-			if (stack.isEmpty()) {
-				throw std::runtime_error("Выражение заданно неверно! Закрывающая скобка идет до открывающей в " + std::to_string(i) + " позиции.");
+	TStack<char> stack;
+	for (operand* t : *v) {
+		if (t->getType()) {
+			switch (t->getName().c_str()[0])
+			{
+			case '(':
+				stack.push(0);
+				break;
+			case ')':
+				if (stack.isEmpty()) {
+					throw std::runtime_error("Выражение заданно неверно! Скобки не открыты!");
+				}
+				stack.pop();
+				break;
+			default:
+				continue;
 			}
-			stack.pop();
-			break;
-		default:
-			continue;
 		}
 	}
 	if (!stack.isEmpty()) {
@@ -177,32 +196,51 @@ void TPostfix::isCorrect()
 
 vector<operand*> TPostfix::split()
 {
-	vector<operand*> expr_splitted;
+	vector<operand*> expr_splitted;  // Вектор выражения в виде операндов в инфексной форме
 
-	string str = "";
-	string current_elem;
-	bool flag;
+	string current_variable = "";  // Строка имени переменной
+	string current_operation;  // Строка имени операции
+	bool flag;  // Флаг была ли найдена операция
 	for (int i = 0; i < infix.length(); i++) {
-		current_elem = infix[i];
 		flag = true;
 
-		for (operation* t : arr) {
-			if (t->getName() == current_elem) {
-				if (str != "") {
-					expr_splitted.push_back(new variable(str));
-					str = "";
-				}
-				expr_splitted.push_back(t);
-				flag = false;
+		if (infix.length() - i >= 3) {  // Т.к. в данной системе операция может иметь имя мксимальной длинной 3 символа
+			current_operation.insert(current_operation.begin(), infix.begin() + i, infix.begin() + i + 3);
+		}
+		else {
+			if (infix.length() - i >= 2) {
+				current_operation.insert(current_operation.begin(), infix.begin() + i, infix.begin() + i + 2);
+			}
+			else {
+				current_operation.insert(current_operation.begin(), infix.begin() + i, infix.begin() + i + 1);
 			}
 		}
-		if (flag) {
-			str += current_elem;
+		while (current_operation.length() >= 1)
+		{
+			for (operation* t : arr) {  // Проверяем совпадает ли текущее имя операции с каким-либо именем операции
+				if (t->getName() == current_operation) {
+					if (current_variable != "") {
+						expr_splitted.push_back(new variable(current_variable));
+						current_variable = "";
+					}
+					expr_splitted.push_back(t);
+					i += current_operation.length() - 1;
+					current_operation = "";
+					flag = false;
+					break;
+				}
+			}
+			if (flag) {  // Если не совпадает уменьшаем кол-во символов
+				current_operation.erase(current_operation.length() - 1, 1);
+			}
 		}
-	
+		if (flag) {  // Если операция не найдена текцщий символ добавляется к имени переменной
+			current_variable += infix[i];
+		}
+
 	}
-	if (str != "") {
-		expr_splitted.push_back(new variable(str));
+	if (current_variable != "") {  // Если имя переменной не пусто, добавляем переменную
+		expr_splitted.push_back(new variable(current_variable));
 	}
 	return expr_splitted;
 }

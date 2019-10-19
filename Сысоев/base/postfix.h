@@ -14,14 +14,16 @@ class TPostfix
 {
 public:
 	// Конструкторы ----------------------------------------------------------------------------------------
-	TPostfix(const string& s) : infix(s), postfix("") { 
+	TPostfix(const string& s) : infix(s), postfix("") // Конструктор инициализатор (привидение типа)
+	{ 
 		initialise_operations(); 
 		infix.erase(remove(infix.begin(), infix.end(), ' '), infix.end());
-	}  // Конструктор инициализатор (привидение типа)
-	TPostfix(const TPostfix& copy) : infix(copy.infix), postfix(copy.postfix), arr(copy.arr) { }  // Конструктор копирования
+	}  
+	TPostfix(const TPostfix& copy) :  // Конструктор копирования
+		infix(copy.infix), postfix(copy.postfix), arr(copy.arr) {}
 
 	// Методы ----------------------------------------------------------------------------------------------
-	string& GetInfix() { return infix; }  // Доступ к инфексной форме записи
+	string GetInfix() { return infix; }  // Доступ к инфексной форме записи
 	string GetPostfix();  // Доступ к постфиксной форме записи
 	double Calculate();  // Ввод переменных, вычисление по постфиксной форме
 	string getTableBrackets();  // Получение таблицы соответствия скобок
@@ -29,11 +31,11 @@ public:
 	// Деструктор ------------------------------------------------------------------------------------------
 	~TPostfix() {
 		for (operand* t : exp) {
-			if (!t->getType()) {
+			if (!t->getType()) {  // Удаляем только переменные
 				delete t;
 			}
 		}
-		for (operand* t: arr) {
+		for (operand* t: arr) {  // Удаляем все операции
 			delete t;
 		}
 	}
@@ -42,11 +44,11 @@ private:
 	string infix;  // Строка, хранящая выражение в инфексной форме
 	string postfix;  // Строка, хранящая выражение в постфиксной форме
 	vector<operation*> arr; // Набор всех поддерживаемых операций
-	vector<operand*> exp;  // Разбор выражение на операнды и операции в постфиксном виде
+	vector<operand*> exp;  // Выражение в виде операндов и операций в постфиксном виде
 
 	// Скрытые методы --------------------------------------------------------------------------------------
-	void initialise_operations();
-	void isCorrect();  // Проверка выражения на корректность
+	void initialise_operations(); // Инициализация массива всех поддерживаемых операций
+	void isCorrectBrakets(const vector<operand*>* v);  // Проверка скобок на корректность
 	vector<operand*> split(); // Разбор строки на операнды и операции
 	void ToPostfix();  // Перевод инфексной строки в постфиксную запись
 
