@@ -81,16 +81,25 @@ double TPostfix::Calculate()
 	double val;  // Результат выражения
 
 
-	for (operand* t : exp)  // Считывание значений переменных
+for (int i = 0; i < exp.size();i++)  // Считывание значений переменных
 	{
-		if (!t->getType()) {
+		if (!exp[i]->getType()) {
 			try {
-				static_cast<variable*>(t)->setValue(std::stod(t->getName()));
+				static_cast<variable*>(exp[i])->setValue(std::stod(exp[i]->getName()));
 			}
 			catch (...) {
-				cout << "Input value of variable " + t->getName() + ":";
-				cin >> val;
-				static_cast<variable*>(t)->setValue(val);
+				bool flag = true;
+				for (int j = 0; j < i; j++) {
+					if ((!exp[j]->getType())&& (exp[j]->getName() == exp[i]->getName())) {
+						static_cast<variable*>(exp[i])->setValue(static_cast<variable*>(exp[j])->getValue());
+						flag = false;
+					}
+				}
+				if (flag) {
+					cout << "Input value of variable " + exp[i]->getName() + ":";
+					cin >> val;
+					static_cast<variable*>(exp[i])->setValue(val);
+				}
 			}
 		}
 	}
