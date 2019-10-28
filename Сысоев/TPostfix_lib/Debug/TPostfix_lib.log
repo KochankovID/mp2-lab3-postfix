@@ -1,0 +1,5 @@
+﻿  postfix.cpp
+C:\Users\Илья\Desktop\АиСД\mp2-lab3-postfix\Сысоев\TPostfix_lib\postfix.cpp(84,19): warning C4018:  <: несоответствие типов со знаком и без знака
+C:\Users\Илья\Desktop\АиСД\mp2-lab3-postfix\Сысоев\TPostfix_lib\postfix.cpp(137,20): warning C4018:  <: несоответствие типов со знаком и без знака
+C:\Users\Илья\Desktop\АиСД\mp2-lab3-postfix\Сысоев\TPostfix_lib\postfix.cpp(214,20): warning C4018:  <: несоответствие типов со знаком и без знака
+  TPostfix_lib.vcxproj -> C:\Users\Илья\Desktop\АиСД\mp2-lab3-postfix\Сысоев\Debug\TPostfix_lib.lib
